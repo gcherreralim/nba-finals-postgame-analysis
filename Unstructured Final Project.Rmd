@@ -1,0 +1,980 @@
+---
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+    #toc: true
+    #toc_float: false
+    #toc_depth: 3
+    code_folding: "hide"
+    includes:
+      after_body: "/Volumes/GoogleDrive/My Drive/Laptop Files/1920B1/General Files/RMD/footer.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+<style>
+#TOC {
+  background: url("https://www.freepnglogos.com/uploads/nba-logo-png/nba-debate-club-milken-hottest-new-club-the-roar-25.png");
+  background-size: 128px 64px;
+  background-position: top center;
+  padding-top: 60px !important;
+  background-repeat: no-repeat;
+  background-color: #17408B;
+  top: 1%;
+  opacity: 0.3;
+}
+#TOC:hover {
+  opacity:1;
+}
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+  color: #FFFFFF;
+  background-color: #17408B;
+  font-family: Avenir Next;
+  font-weight: 700;
+}
+.list-group-item {
+  color: #17408B;
+  background-color: #FFFFFF;
+}
+.nav>li>a {
+  position: relative;
+  display: block;
+  color: #FFFFFF;
+  background-color: #17408B;
+}
+  .nav>li>a:hover {
+    background-color: #C9082A;
+    color: #FFFFFF;
+  }
+.nav-pills > li.active > a, .nav-pills > li.active > a:focus {
+  color: #FFFFFF;
+  background-color: #C9082A;
+  font-weight: 700;
+}
+  .nav-pills > li.active > a:hover {
+    background-color: #C9082A;
+    color: #FFFFFF;
+    font-weight: 700;
+  }
+.btn {
+  background-color: black;
+  border: none;
+  color: black;
+  font-size: 10px;
+}
+button.btn:hover {
+  color: #17408B;
+}
+button.btn.btn-default.btn-xs.dropdown-toggle {
+  background-color: white;
+  color: #17408B;
+}
+.dropdown-menu {
+  background-color: #C9082A;
+}
+.dropdown-menu #rmd-show-all-code {
+  color: white;
+  font-family: Avenir Next;
+  font-size: 10px;
+}
+.dropdown-menu #rmd-show-all-code:hover {
+  background-color: #17408B;
+  color: white;
+}
+.dropdown-menu #rmd-hide-all-code {
+  color: white;
+  font-family: Avenir Next;
+  font-size: 10px;
+}
+.dropdown-menu #rmd-hide-all-code:hover {
+  background-color: #17408B;
+  color:white;
+}
+</style>
+
+<style type="text/css">
+
+body{ /* Normal  */
+      font-size: 13px;
+      font-family: Avenir Next;
+      color: #696969;
+      text-align: justify;
+      background-color: white;x
+  }
+
+td {  /* Table  */
+  font-size: 8px;
+}
+.mytitle {
+  max-width:2000px;
+  margin-left: -335px;
+  padding: 0;
+  width: 2000px;
+}
+h3.subtitle {
+  font-size: 25px;
+  color: #17408B;
+  font-family: 'Lato', sans-serif;
+  font-weight: 600;
+  font-style: bold;
+  text-align: center;
+  margin: 0px;
+}
+h4 {
+  font-size: 18px;
+  font-family: Avenir Next;
+  color: #17408B;
+  font-weight: 700;
+}
+h4.author {
+  font-size: 20px;
+  color: #17408B;
+  font-family: 'Lato', sans-serif;
+  font-style: bold;
+  text-align: center;
+  margin: 0px;
+}
+h2 { /* Header 3 */
+  font-size: 18px;
+  font-family: Avenir Next;
+  color: #FFFFFF;
+  font-weight: 700;
+  text-align: center;
+  background-color: #C9082A;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+code.r{ /* Code block */
+    font-size: 12px;
+    font-family: Avenir Next;
+    color: #C9082A;
+}
+pre { /* Code block - determines code spacing between lines */
+    font-size: 10px;
+    font-family: Avenir Next;
+    color: #C9082A
+    background-color: white;
+}
+blockquote {
+    padding: 10px 20px;
+    margin: 0 0 20px;
+    font-size: 12px;
+    border-left: 5px solid #C9082A;
+}
+
+</style>
+
+<div class ="mytitle">
+<a href="http://www.asapsports.com/showcat.php?id=11">
+![](/Volumes/GoogleDrive/My Drive/Laptop Files/1920B1/MW 1 Unstructured Data Analytics/06 Final Project/Unstructured Final Project/header.png)
+</a>
+</div>
+
+***
+
+Sports bring out a lot of emotion from different people, and these emotions are captured in their rawest form in post-game interviews and press conferences. Fresh off major wins and losses, players and coaches are subject to media questions and their feelings on the game and how it was played (among others) is put into light. For this project, I'll be analyzing post-game interviews from both players and coaches to see if there are any interesting patterns and differences between how a certain player and a certain coach show emotion after a high-pressure game.
+
+***
+
+## ![Some Context](/Volumes/GoogleDrive/My Drive/Laptop Files/1920B1/MW 1 Unstructured Data Analytics/06 Final Project/Unstructured Final Project/topic headers/some-context.png) {.tabset .tabset-fade .tabset-pills}
+<br>
+Just to set a scope of what the project will tackle, I'll be analyzing the 9 NBA Finals series that LeBron James was a part of: 2007, 2011, 2012, 2013, 2014, 2015, 2016, 2017, and 2018. Within these series, I'll be comparing the sentiments of the interviews held with **LeBron** and each of his four coaches in those seasons: **Mike Brown**, **Erik Spoelstra**, **David Blatt**, and **Tyronn Lue**.
+
+### Questions Answered
+Some questions I hope to answer by the end of this project:  
+  
+1. **What sentiments usually stand out in these interviews?**   
+Post-game interviews bring out a lot of emotion from both players and coaches. Both wins and losses trigger certain emotions that are reflected on how athletes are asked questions and how they answer. Which sentiments/emotions usually dominate these interviews?  
+2. **Do these sentiments vary between LeBron and his coaches?**  
+Both players and coaches respond differently to questions (which also vary in themselves between coaches and players). How differently do these sentiments occur between LeBron's post-game interviews and his coaches'?  
+3. **Over time, do the sentiments/overall sentiment and topics of LeBron's interviews change?**  
+LeBron first participated in an NBA Finals in 2007, at the age of 22. His most recent Finals trip was in 2018, at the age of 33. He participated in a total of 9 NBA Finals series over the course of his career. How much has he changed in how he approaches these post-game interviews in terms of the sentiments and the topics discussed in these interviews?  
+4. **How often are personal pronouns (I, me, my, mine) used over collective pronouns (us, we, our, ours)?**  
+Sometimes, players and coaches like to speak on behalf of the team when answering questions after games (this also depends on what and how questions are asked). I wanted to see the count of occurrences of both personal and collective pronouns.
+
+***
+
+### Data and Methodology Used
+For this project, I used transcript logs from <b><a href="http://asapsports.com/showcat.php?id=11"> ASAP Sports </a></b>.  This website contains a mix of pre- and post-game interviews that occurred in major sporting events (playoff games, all-star games, etc.). You can navigate to your event of choice, and eventually see a collection of links for each day of the event of your choice. Each of these links will then lead you to an interview with either a player, coach, or another important figure.
+
+I gathered links for each relevant event and combined all outputs into one full transcript database for analysis. Analysis tools and models I used were:  
+1. **Sentiment Analysis**: Using lexicons, analyzing word count (and count of types of text), average sentiment between subgroups of data, creating word clouds and other graphs  
+2. **Topic Modeling**: Creating topic models, analyzing contents of each topic, and plotting relationship with date
+
+The project and methodology were inspired by <b><a href="https://www.mathieubray.com/2017/02/11/text-analysis-hockey-coaches/"> Matheiu Bray's Text Analysis of NHL Hockey Coach Interviews. </a></b>
+
+**Subjects for this Project**
+
+![Scraping and Data Manipulation](/Volumes/GoogleDrive/My Drive/Laptop Files/1920B1/MW 1 Unstructured Data Analytics/06 Final Project/Unstructured Final Project/topic headers/subjects.png) 
+
+***
+
+
+## ![Scraping and Data Manipulation](/Volumes/GoogleDrive/My Drive/Laptop Files/1920B1/MW 1 Unstructured Data Analytics/06 Final Project/Unstructured Final Project/topic headers/scraping.png) {.tabset .tabset-fade .tabset-pills}
+
+***
+
+### Scraping Data from ASAP Sports
+To scrape the data from each event (i.e. each Finals series), I first retrieved the links for each event. I then created two functions that, first, retrieved interview links (each player and coach) from each series, second, extracted relevant text from each link (interview), and lastly, placed them in one dataframe per event. I then added identifiers for easier analysis later on, and combined all datasets to create one transcript table.
+
+```{r, echo = FALSE}
+library(rvest) # For web scraping
+library(tidyverse)
+library(purrr) # 'map'
+library(stringr) # String functions
+library(lubridate) # For working with dates
+library(tidytext) # Text analysis
+library(ggplot2) # Plots
+library(wordcloud2) # Word clouds
+library(plyr)
+```
+
+```{r}
+get.transcripts <- function(url){
+  
+  urls <- read_html(url) %>% 
+    html_nodes("a") %>%
+    html_attr("href") # Extract the url attributes
+  
+  # Relevant links have the 'show_interview.php?' tag
+  relevant.urls <- urls[grepl(urls,pattern="show_interview.php?",fixed=T)] 
+  
+  # Run text extraction function on each link
+  transcripts <- rbind.fill(map(relevant.urls,extract.interview.text))
+  
+  return(transcripts)
+}
+
+extract.interview.text <- function(url){
+  
+  text <- read_html(url) %>%
+    html_nodes("td") %>% 
+    html_text() # Extract text
+  
+  # Relevant text 
+  text.clean <- text[grepl(text,pattern="FastScripts Transcript by ASAP Sports|End of FastScripts|Аф")]
+  
+  # Split information into separate strings, remove whitespace at the beginning and end of each
+  text.clean.split <- str_trim(str_split(text.clean,pattern="\n")[[2]])
+  
+  # Remove empty strings, remove the ASAP sports tag from strings
+  raw.text <- gsub(text.clean.split[text.clean.split != ""],pattern=" FastScripts Transcript by ASAP Sports",replacement="")
+  
+  # Extract date (in second string)
+  date <- mdy(raw.text[2])
+  
+  # Find index of the string where the interview starts, which is the first string where 'Q.' and 'MODERATOR' serves as a prompt
+  # For interviews taking place after games, there is additional text in the preamble. Therefore, if this index is large, we can infer this is a post-game interview 
+  interview.starts <- min(c(which(str_detect(raw.text,"Q.")),which(str_detect(raw.text,"MODERATOR")),which(str_detect(raw.text,"STUART SCOTT"))))
+  
+  # Third string contains the interview subject, though everything is squashed together
+  # Put spaces between capital letters, split based on whitespace, then combine the second and fourth token as the subject
+  tokens <- unlist(strsplit(gsub('([[:upper:]])',' \\1',raw.text[3]),"[[:space:]]"))
+  subject <- paste(tokens[2],tokens[4])
+  
+  # Actual text is from the above found index onward
+  interview.text <- raw.text[interview.starts:length(raw.text)]
+  
+  # Remove general prompts
+  relevant.interview.text <- paste(interview.text[!str_detect(interview.text,"Q.") & !str_detect(interview.text,"MODERATOR")],collapse=" ")
+  
+  # Combine information into data frame
+  interview.data <- data.frame(Date=date,Subject=subject,Text=relevant.interview.text,stringsAsFactors=F)
+  
+  return(interview.data)
+  
+}
+extract_urls = function(event_url) {
+  transcript_urls = read_html(event_url) %>%
+    html_nodes("a") %>%
+    html_attr("href")
+}
+
+rel_urls = function(url) {
+  relevant_urls = url[grepl(url, pattern = "show_event.php?", fixed = T)]
+}
+
+ret_transcripts = function(url) {
+  transcripts = rbind.fill(map(url, extract.interview.text))
+  return(transcripts)
+}
+
+finals07 = paste0("http://www.asapsports.com/show_events.php?category=11&year=2007&title=NBA+FINALS%3A+CAVALIERS+v+SPURS")
+finals11 = paste0("http://www.asapsports.com/show_events.php?category=11&year=2011&title=NBA+FINALS%3A+MAVERICKS+v+HEAT")
+finals12 = paste0("http://www.asapsports.com/show_events.php?category=11&year=2012&title=NBA+FINALS%3A+HEAT+v+THUNDER")
+finals13 = paste0("http://www.asapsports.com/show_events.php?category=11&year=2013&title=NBA+FINALS%3A+SPURS+v+HEAT")
+finals14 = paste0("http://www.asapsports.com/show_events.php?category=11&year=2014&title=NBA+FINALS%3A+HEAT+v+SPURS")
+finals15 = paste0("http://www.asapsports.com/show_events.php?category=11&year=2015&title=NBA+FINALS%3A+CAVALIERS+v+WARRIORS")
+finals16 = paste0("http://www.asapsports.com/show_events.php?category=11&year=2016&title=NBA+FINALS%3A+CAVALIERS+v+WARRIORS")
+finals17 = paste0("http://www.asapsports.com/show_events.php?category=11&year=2017&title=NBA+FINALS%3A+CLEVELAND+VS+GOLDEN+STATE")
+finals18 = paste0("http://www.asapsports.com/show_events.php?category=11&year=2018&title=NBA+FINALS%3A+CAVALIERS+vs+WARRIORS")
+
+finalslinks = c(finals07, finals11, finals12, finals13, finals14, finals15, finals16, finals17, finals18)
+
+# Extract links
+transcript_urls = lapply(finalslinks, FUN = extract_urls)
+# Relevant links have the 'show_event.php?' tag
+relevant_urls = lapply(transcript_urls, FUN = rel_urls)
+rel07 = relevant_urls[[1]]
+rel11 = relevant_urls[[2]]
+rel12 = relevant_urls[[3]]
+rel13 = relevant_urls[[4]]
+rel14 = relevant_urls[[5]]
+rel15 = relevant_urls[[6]]
+rel16 = relevant_urls[[7]]
+rel17 = relevant_urls[[8]]
+rel18 = relevant_urls[[9]]
+
+t07 = rbind.fill(map(rel07,get.transcripts))
+t11 = rbind.fill(map(rel11,get.transcripts))
+t12 = rbind.fill(map(rel12,get.transcripts))
+t13 = rbind.fill(map(rel13,get.transcripts))
+t14 = rbind.fill(map(rel14,get.transcripts))
+t15 = rbind.fill(map(rel15,get.transcripts))
+t16 = rbind.fill(map(rel16,get.transcripts))
+t17 = rbind.fill(map(rel17,get.transcripts))
+t18 = rbind.fill(map(rel18,get.transcripts))
+
+
+```
+
+***
+
+### Manipulating Data
+Now that I have tables for each Finals series, it's time to put them all together for analysis. First, I added another column to designate which series these interviews were held in. Then, I bound them all together to make one whole table, and filtered out interviews with players, coaches, and other people that I did not need for this project.
+
+I also did some string manipulation to fix some errors.
+```{r}
+t07 = t07 %>%
+  mutate(Series = "2007")
+t11 = t11 %>%
+  mutate(Series = "2011")
+t12 = t12 %>%
+  mutate(Series = "2012")
+t13 = t13 %>%
+  mutate(Series = "2013")
+t14 = t14 %>%
+  mutate(Series = "2014")
+t15 = t15 %>%
+  mutate(Series = "2015")
+t16 = t16 %>%
+  mutate(Series = "2016")
+t17 = t17 %>%
+  mutate(Series = "2017")
+t18 = t18 %>%
+  mutate(Series = "2018")
+
+ft = bind_rows(t07, t11, t12, t13, t14, t15, t16, t17, t18)
+
+ft = ft %>%
+  mutate(Subject = gsub(Subject, pattern="Le ", replacement="LeBron James"))
+
+ft = ft %>%
+  filter(Subject %in% c("LeBron James", "Mike Brown", "Erik Spoelstra", "David Blatt", "Tyronn Lue")) %>%
+  mutate(Text = gsub(Text, pattern="Â", replacement="")) %>%
+  mutate(Text = str_squish(Text)) %>%
+  mutate(Text = gsub(Text, pattern="COACH MIKE BROWN: ", replacement="")) %>%
+  mutate(Text = gsub(Text, pattern="COACH ERIK SPOELSTRA: ", replacement="")) %>%
+  mutate(Text = gsub(Text, pattern="MIKE BROWN: ", replacement="")) %>%
+  mutate(Text = gsub(Text, pattern="COACH SPOELSTRA: ", replacement="")) %>%
+  mutate(Text = gsub(Text, pattern="ERIK SPOELSTRA: ", replacement="")) %>%
+  mutate(Text = gsub(Text, pattern="COACH LUE: ", replacement="")) %>%
+  mutate(Text = gsub(Text, pattern="TYRONN LUE: ", replacement="")) %>%
+  mutate(Text = gsub(Text, pattern="LEBRON JAMES: ", replacement="")) %>%
+  mutate(Text = gsub(Text, pattern="LeBRON JAMES: ", replacement="")) %>%
+  mutate(Text = gsub(Text, pattern="COACH BLATT: ", replacement="")) %>%
+  mutate(Text = gsub(Text, pattern="COACH BROWN: ", replacement=""))
+
+## Somehow Dwyane Wade snuck himself in there
+ft$Text[27] = gsub(ft$Text[27], pattern = "DWYANE WADE: It's unfortunate. Obviously we put ourselves in a position on the road especially to win games. We haven't been able to do that. That's been our staple. That's the reason we're here. The good thing about life and the good thing about this game, we get another opportunity, another crack at it. | DWYANE WADE: Well, I mean, obviously they're a tough team to guard. Like we said, they're the best offensive team in this game. But I guess they have momentum in the sense they came home and won two games. But each game is its own. We're going to come out -- every game has been pretty much a possession here, a possession there. Either team can come in and say they can be up different than what they are. We'll be coming to the game understanding it's a possession game in Game 6. Doing whatever it takes to win the ballgame. So we're confident.", replacement = "")
+ft$Text[32] = gsub(ft$Text[32], pattern = "DWYANE WADE: The rhythm just, trying to make plays, maybe get to the basket, make some things happen. I can't shoot the free throw any better than I did. It went in and came out. The basketball gods didn't want it to go in. When you put yourself in a situation where you practice on that moment, you thought about that moment, you go out there and you shoot them like you normally do. That's what I did. It eventually came out. DWYANE WADE: We had many different options to look for. I was denied. I came back off another screen. I saw an opening. Mike threw the ball and I was trying to get to the opening, probably before I caught it. That's how I lost it. Just trying to get the ball back before it went over half court. ", replacement = "")
+ft$Text[32] = gsub(ft$Text[32], pattern = "DWYANE WADE: Just trying to make plays. My teammates and my team count on me to be more than one-dimensional. So obviously I'm in an offensive rhythm. It's just one side of the ball. On the other end of the floor my matchup is to chase Jason Terry around. I have to do that. If I'm off the ball I try to be more active. Just make plays. Sometimes it results in blocks or steals or rebounds. It's The Finals. You just want to make sure every night you leave the court you feel like you left it all out there. It's not always going to be a positive result, but at the end of the day, if you feel like you left it all out there, you can be satisfied with the result. DWYANE WADE: Obviously, we had opportunity to win the ballgame. The one thing about this series, you see no team is ever safe. When it looks like one team may be in control of the game, the other team comes back. So that's why it's a 48-minute game. Obviously their supporting cast did a good job. They've been getting pounded by you guys for the last 48 hours. So there's a lot of pride. They came out and played well. They had a lot of different guys do a lot of good things. ", replacement = "")
+ft$Text[37] = gsub(ft$Text[37], pattern = "DWYANE WADE: That's awesome, because we felt the same way. You can't lose a game like that and come and lose Game 3. We felt this was a must-win. We had to put it upon ourselves to try to take home court back in a sense, and by any means necessary. DWYANE WADE: Obviously, you know, we have a lot of confidence in our team defense. That was a man-to-man defense right there. It was Udonis putting his chest in front. We had a lot of confidence coming out of the huddle. We wanted to win this game right now on the defensive end with that stop. Even more confidence than we had if we were down two or tied and had it on the offensive end. DWYANE WADE: Them guys understand. They know me. I understand them. If things are said to each other, it's all in the better for the team. It's all about winning. I want it. LeBron knew that. The things I was saying to him, I was saying to Chris, wasn't nothing they wouldn't say to me. It was something they would say to me in the Chicago series and vice versa. We have enough respect for each other. At the same time, I wanted it. | DWYANE WADE: I mean, obviously a game of basketball is a game full of runs. So there was moments in the game where offense looked great and their offense looked great. There were points where neither offense looked great. Obviously they did a good job of turning up their pressure. I thought we got ourselves in a little trouble by getting late clock. When we do that, they're able to turn up the pressure. It makes us take bad shots or settle for shots. DWYANE WADE: Obviously Dirk is great. A great one-on-one player. A great shooter. We understand Dirk is going to get his numbers. It's our job just to try to make it tough on other guys. They have guys that can score the ball. Shawn Marion has come into this averaging 18 and 9. Jason Terry was huge for them in Game 2 and an unbelievable scorer. They have other guys that can score. It's our job to make it tough. They've shown they have a deep bench. They've shown they have a very good team. They wouldn't be in The Finals without none of them guys. So we're not going to give Dirk all the credit at all. This Dallas Mavericks team is very deep.", replacement = "")
+ft$Text[47] = gsub(ft$Text[47], pattern = "DWYANE WADE: Well, it's kind of like watching Chris grow during this playoff series. Obviously, we all had an opportunity to watch him play a little bit in the regular season, and not much in the playoffs. But he's been up for the challenge. He said he had a bad game today. We looked and said, I'll take 19 and 9. He's just an efficient player. | DWYANE WADE: Well, obviously, that's one of the ideas of us playing together. For one individual to not have to carry that load. Obviously we love to have a guy explode for a 40-point night. But more so I think what he wanted me to do was look back at how aggressive I was, the mentality that I had. And I actually wasn't trying to, but I did watch Game 3 on TV last night in the fourth quarter. I see I had no conscious back then. DWYANE WADE: In his thumbs, everything. DWYANE WADE: Momentum. I knew what he was going to do. He let the clock go all the way down to four before he decided to move. When he had it in his right hand, I knew what he was going to do. I shoot with him after practice every day, so I know him. Not many guys can make that. It's a tough shot to make. Going to your right, you have to be strong to make something like that. But that was just about a momentum swing for our team and a confidence boost going into the fourth quarter with a four-point lead. DWYANE WADE: No. ", replacement = "")
+ft$Text[72] = gsub(ft$Text[72], pattern = "DWYANE WADE: It all depends what you mean. I was attacking, getting my teammates shots, and I got shots for myself. Attacking to me is just being aggressive. Some nights I have big nights scoring and some nights I don't. That's been the season. That's just the way that it's designed for me. | DWYANE WADE: I think we had that answer when it kept moving. Sometimes the game goes to where guys attack a little more, especially when the ball is me and LeBron handle a lot, we attack a lot and it's not as much swing‑swing, and that's good for our team. But we'll look at it and we'll see why and we'll see if we can get better opportunities. DWYANE WADE: Sorry, man. You know, it's The Finals. I've been doing it all year. I am going to continue to do it. I'm a winner, so I'm just doing whatever I can help to help my team win. Some nights ‑‑ one night I'm going to have a big night scoring, some nights I'm going to have a big nights doing other things. Just doing whatever it takes to win the ballgame, not necessarily sitting up here worrying about scoring 30 points. I know that's going to make you guys feel better. I'm all about winning. We didn't win tonight, and that's the biggest thing, so we'll find a way to win Game 2, not necessarily worried about me scoring 30.", replacement = "")
+ft$Text[85] = gsub(ft$Text[85], pattern = "DWYANE WADE: Can't really explain it right now. But they continue to have great starts. We continue to start slow. We just digged ourselves in a deep hole very early, and unlike Game 3, we fought back. We got it, like you said, within one. We used so much to get back, and they continued to keep coming at us. So the lead kept going back and forth. But we kept fighting, we kept feeling like we had a chance. This was a game that it was like we could steal it. But they continued to make shots. Credit to them. Their starters played big tonight. All of them made shots. They shot 60% from the field in a tough game. | DWYANE WADE: Well, I mean we challenge ourselves to see if we're a better team than we was. Same position no matter how we got to it. We're in the same position going back home with Game 6 on our home floor. So we're going to see if we're a better ballclub and if we're better prepared for this moment. | DWYANE WADE: I mean, this is the kind of team that I feel capitalizes on any mistake you make. So if you're half a second late, they capitalize on it. DWYANE WADE: I think you said it. They're a very great team. We're a great team as well. So at this time we're going to make another adjustment. It's going to be very small. But that's not what's going to win the ballgame. Just like tonight the adjustment they made with throwing more isolations at Tony Parker didn't necessarily win the ballgame but it helped. It changed things. DWYANE WADE: I think obviously you cannot stop yourself from thinking that way, you know. Last year we had opportunity we were up 3‑1, I couldn't go to sleep that night. All I thought about was all we have to do is win one more and we're champions. So obviously you're going to think that way. You also have a game to play. And so I'm sure this team, they've been here before many times. They understand winning that last game is one of the hardest things you're going to do. And we understand it as well. But you know what, it's the game, we got to play it. I like our chances, just like they like their chances, in this series and in Game 6. We'll see. We'll see which team, which style is going to prevail. ", replacement = "")
+ft$Text[120] = gsub(ft$Text[120], pattern = "DWYANE WADE: A combination. Like you said, I mean, they jumped on us early, and that went from ‑‑ to confidence when they didn't miss, and now you're fighting to get back. Now you're not playing the rhythm in the way you normally play. You're forcing things. DWYANE WADE: Yeah, we dug ourselves a pretty big hole. But, you know, we're a resilient team. We're going to keep fighting. I thought third quarter we came out with a lot of energy, the way we'd have loved to start the game. Pushed it, got it to like 10. But this team they still had a rhythm going, they made plays as a team to not let us get any closer. But we did what we wanted to do out of the timeout. We wanted to come out of the first timeout, we wanted to cut the lead, trim it down. I think we got it to 12, 13 the first one. We cut it within 10 by the end of the quarter, but we couldn't get it as close as we wanted. They had a good rhythm going. They made shots. | DWYANE WADE: Well, you know, we're going to continue to give him confidence. Mario is a big piece of what we do, and we're missing that piece right now, for whatever the reason is. But as a team, we're going to continue to give him confidence so when he has his shot, shoot it, take it. Defensively, Mario is someone who we depend on to cause havoc, and we need him to do that. | DWYANE WADE: Well, when they're missing, defense is great. When they're making shots, your defense is lackluster. You know, it's the nature of the beast. Tonight they shot the ball very well. We helped them early on by giving them rhythm, and they knocked shots down from there. It's things that we've done in previous games. You contest them. You look and see, Danny Green was 7‑for‑8, but only hit one three. He got a lot of dribbling and we closed him off the three. He went to the basket a lot tonight. Little different than what he's done, but that's the job that we're supposed to do. Now we've got to figure out a way if they make that adjustment, we have to be aware of it. But it's a hit‑or‑miss league.", replacement = "")
+
+ft = ft %>%
+  mutate(Text = gsub(Text, pattern="FastScripts Transcript by ASAP Sports", replacement=""))
+
+ft = ft %>%
+  select(Series, everything()) %>%
+  mutate(Subject = as.factor(Subject))
+```
+
+***
+
+### Using Lexicons
+I used the nrc lexicon for this project.
+
+```{r}
+nrcWord = textdata::lexicon_nrc()
+nrcValues = lexicon::hash_sentiment_nrc
+```
+
+***
+
+## ![Sentiment Analysis Part I](/Volumes/GoogleDrive/My Drive/Laptop Files/1920B1/MW 1 Unstructured Data Analytics/06 Final Project/Unstructured Final Project/topic headers/sent1.png) {.tabset .tabset-fade .tabset-pills}
+
+In this part, I did a sentiment analysis for each interview and tested the occurrence of each type of sentiment over time and per person, as well as the overall sentiment per person and per series, trying to see if there were any trends among the different subjects and whether or not a win affected the overall sentiment of LeBron and his coaches.
+
+### Preliminary Analyses
+Before I move on to the actual sentiment analysis, I did some initial analysis on word frequency - both per series, and per person
+```{r}
+ft.words = ft %>%
+  unnest_tokens(Word, Text) %>%
+  filter(! Word %in% stop_words$word) %>%
+  filter(! Word == "fastscripts")
+```
+
+Let's display the 15 most commonly used words by each coach and LeBron, and their frequency.
+```{r}
+ft.words %>%
+  group_by(Subject, Word) %>%
+  dplyr::summarize(count = n()) %>%
+  top_n(15) %>%
+  arrange(Subject, desc(count)) %>%
+  ggplot(aes(x = reorder(Word, count), y = count, fill = Subject)) +
+  facet_wrap(~Subject, scales = "free_y") +
+  geom_bar(stat = "identity", show.legend=F) +
+  scale_y_continuous(expand = c(0,0)) +
+  coord_flip() +
+  labs(title = "Frequency per Person",
+       y = "Frequency",
+       x = "") +
+  theme(text = element_text(family = "Avenir Next",
+                            color = '#17408B'),
+        plot.title = element_text(color = "#17408B",
+                                  face = "bold"),
+        axis.text = element_text(color = '#17408B'),
+        plot.background = element_rect(fill = 'white'),
+        panel.background = element_rect(fill = 'white'))
+```
+
+> We can see that 'game', 'team', and 'guys' are mentioned quite a lot. Most of the coaches mention winning with the exception of Mike Brown, who also seems to mention LeBron a lot more than the other three coaches. 'Day' is also mentioned a lot because apparently LeBron likes saying 'at the end of the day'. No surprising insights here.
+
+What about if we analyzed it per series?
+
+```{r}
+ft.words %>%
+  group_by(Series, Word) %>%
+  dplyr::summarize(count = n()) %>%
+  top_n(15) %>%
+  arrange(Series, desc(count)) %>%
+  ggplot(aes(x = reorder(Word, count), y = count, fill = Series)) +
+  facet_wrap(~Series, scales = "free_y") +
+  geom_bar(stat = "identity", show.legend=F) +
+  scale_y_continuous(expand = c(0,0)) +
+  coord_flip() +
+  labs(title = "Frequency per Series",
+       y = "Frequency",
+       x = "") +
+  theme(text = element_text(family = "Avenir Next",
+                            color = '#17408B'),
+        plot.title = element_text(color = "#17408B",
+                                  face = "bold"),
+        axis.text = element_text(color = '#17408B'),
+        plot.background = element_rect(fill = 'white'),
+        panel.background = element_rect(fill = 'white'))
+```
+
+> Not much to see here again. Game, team, and guys are mentioned a lot, and like in the frequency chart above, winning is not mentioned much in the 2007 series (coached by Mike Brown). Some notable words are aggressive (mentioned in 2011 in a loss, and 2016 in a win), wade (the only time a player is mentioned in this chart, in 2011).
+
+***
+
+### Sentiment Analysis Over Time
+
+```{r}
+ft.sentiment = ft.words %>%
+  inner_join(nrcWord, by = c("Word" = "word"))
+ft.value = ft.words %>%
+  inner_join(nrcValues, by = c("Word" = "x"))
+
+ft.wordbyseries = ft.words %>%
+  group_by(Subject, Series) %>%
+  dplyr::mutate(TotalWords = n()) %>%
+  ungroup() %>%
+  distinct(Subject, Series, TotalWords)
+
+ft.wordbysent = ft.sentiment %>%
+  dplyr::count(sentiment, Series, Subject) %>%
+  dplyr::rename(Occurrences = n) %>%
+  inner_join(ft.wordbyseries, by = c("Series", "Subject")) %>%
+  mutate(Frequency = Occurrences/TotalWords)
+
+## Plotting Sentiment Over Time
+ft.wordbysent %>%
+  filter(Frequency < 1) %>%
+  ggplot(aes(x = Series, y = Frequency, color = Subject, group = Subject)) +
+  facet_wrap(~sentiment, nrow = 5) +
+  geom_line(show.legend = F) +
+  geom_point() +
+  labs(title = "Sentiment Over Time",
+       y = "Series",
+       x = "Frequency") +
+  theme(text = element_text(family = "Avenir Next",
+                            color = '#17408B'),
+        plot.title = element_text(color = "#17408B",
+                                  face = "bold"),
+        axis.text = element_text(color = '#17408B'),
+        plot.background = element_rect(fill = 'white'),
+        panel.background = element_rect(fill = 'white'))
+```
+
+> Note the high frequency of positive (positive, joy, trust, anticipation) sentiment for young LeBron in the 2007 Finals, which, along with other sentiments, balanced out in his 8-year run of consecutive Finals appearances. Other than that, there seems to be no visible spikes per year, and every coach seems to be consistent in their sentiment throughout the years (the coaches with the most variation at eye level seem to be Erik Spoelstra and Tyronn Lue).
+
+Let's try to zoom in into the 2016 Finals, which went to 7 games and resulted in a win for LeBron and his team.
+
+```{r}
+ft.wordbydate = ft.words %>%
+  group_by(Subject, Date) %>%
+  dplyr::mutate(TotalWords = n()) %>%
+  ungroup() %>%
+  distinct(Subject, Date, TotalWords)
+
+ft.wordbysent = ft.sentiment %>%
+  dplyr::count(sentiment, Date, Subject) %>%
+  dplyr::rename(Occurrences = n) %>%
+  inner_join(ft.wordbydate, by = c("Date", "Subject")) %>%
+  mutate(Frequency = Occurrences/TotalWords)
+
+## Plotting Sentiment Over Time
+ft.wordbysent %>%
+  filter(between(Date, as.Date("2016-01-01"), as.Date("2016-12-31"))) %>%
+  filter(Frequency < 1) %>%
+  ggplot(aes(x = Date, y = Frequency, color = Subject, group = Subject)) +
+  facet_wrap(~sentiment, nrow = 5) +
+  geom_line(show.legend = F) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(title = "Sentiment Over The 2016 Finals",
+       y = "Series",
+       x = "Frequency") +
+  theme(text = element_text(family = "Avenir Next",
+                            color = '#17408B'),
+        plot.title = element_text(color = "#17408B",
+                                  face = "bold"),
+        axis.text = element_text(color = '#17408B'),
+        plot.background = element_rect(fill = 'white'),
+        panel.background = element_rect(fill = 'white'))
+```
+
+> This was a very volatile series in terms of sentiment. You can see negative trends in positivity towards the middle of the series, when Cleveland went down 3-1 and lost a lot of hope in taking back the series, but we can also see the spikes in anticipation and surprise after that, which was when Cleveland was gaining traction and catching up in the series. Other than that, you can see that LeBron's sentiments were rather balanced over time, while Tyronn Lue's was relatively more fluctuating. This is interesting because usually, it's the player who reveals more emotion, especially in a series like this.
+
+***
+
+### Overall Sentiment Per Person
+
+```{r}
+ft.value %>%
+  group_by(Subject) %>%
+  dplyr::summarize(sumSentiment = sum(y),
+                   count = n(),
+                   aveSentiment = sumSentiment/count) %>%
+  ggplot(aes(x = Subject, y = aveSentiment, fill = Subject)) +
+  geom_bar(stat = "identity", show.legend = F) +
+  labs(title = "Average Sentiment per Person",
+       y = "Average Sentiment",
+       x = "Subject") +
+  theme(text = element_text(family = "Avenir Next",
+                            color = '#17408B'),
+        plot.title = element_text(color = "#17408B",
+                                  face = "bold"),
+        axis.text = element_text(color = '#17408B'),
+        plot.background = element_rect(fill = 'white'),
+        panel.background = element_rect(fill = 'white'))
+```
+
+> This is interesting. We can see that in terms of coaches, Erik Spoelstra and Tyronn Lue (by a large margin) had lower average sentiments than David Blatt and Mike Brown, despite being the two coaches that have won at least one Finals series. This could be them doing their job by not getting too excited over the possibility of winning (which also goes the other way with Brown and Blatt raising their positivity despite bad outcomes). This, however, should be not be taken as a be-all end-all of things since Brown and Blatt have also only been to 1 Finals series each as LeBron's coach.
+
+***
+
+## ![Sentiment Analysis Part II](/Volumes/GoogleDrive/My Drive/Laptop Files/1920B1/MW 1 Unstructured Data Analytics/06 Final Project/Unstructured Final Project/topic headers/sent2.png) {.tabset .tabset-fade .tabset-pills}
+
+In this part, I analyzed LeBron's sentiment throughout all his appearances in the Finals. There were 11 years, nearly a thousand games played, and an average career's worth of experiences in between those two appearances. Both of these appearances ended in a sweep, but they are far from the same thing. Let's see how LeBron grew in terms of his attitude in post-game interviews throughout his Finals career. We saw some of this earlier, but let's put LeBron on focus.
+
+### Overall Sentiment Over Time
+```{r}
+ft.wordbyseries = ft.words %>%
+  group_by(Subject, Series) %>%
+  dplyr::mutate(TotalWords = n()) %>%
+  ungroup() %>%
+  distinct(Subject, Series, TotalWords)
+
+ft.wordbysent = ft.sentiment %>%
+  dplyr::count(sentiment, Series, Subject) %>%
+  dplyr::rename(Occurrences = n) %>%
+  inner_join(ft.wordbyseries, by = c("Series", "Subject")) %>%
+  mutate(Frequency = Occurrences/TotalWords)
+
+## Plotting Sentiment Over Time
+ft.wordbysent %>%
+  filter(Subject == "LeBron James") %>%
+  filter(Frequency < 1) %>%
+  ggplot(aes(x = Series, y = Frequency, color = sentiment, group = Subject)) +
+  facet_wrap(~sentiment, nrow = 5) +
+  geom_line() +
+  geom_point() +
+  labs(title = "LeBron James Sentiment Over Time",
+       y = "Frequency",
+       x = "Series") +
+  theme(text = element_text(family = "Avenir Next",
+                            color = '#17408B'),
+        plot.title = element_text(color = "#17408B",
+                                  face = "bold"),
+        axis.text = element_text(color = '#17408B'),
+        plot.background = element_rect(fill = 'white'),
+        panel.background = element_rect(fill = 'white'))
+```
+
+> We don't see much here that we didn't already see before. Let's take a look at his overall sentiment over time.
+
+```{r}
+ft.value %>%
+  filter(Subject == "LeBron James") %>%
+  group_by(Subject, Series) %>%
+  dplyr::summarize(sumSentiment = sum(y),
+                   count = n(),
+                   aveSentiment = sumSentiment/count) %>%
+  ggplot(aes(x = Series, y = aveSentiment, fill = Series, group = Subject)) +
+  geom_bar(stat = "identity", show.legend = F) +
+  labs(title = "LeBron James Sentiment Over Time",
+       y = "Frequency",
+       x = "Series") +
+  theme(text = element_text(family = "Avenir Next",
+                            color = '#17408B'),
+        plot.title = element_text(color = "#17408B",
+                                  face = "bold"),
+        axis.text = element_text(color = '#17408B'),
+        plot.background = element_rect(fill = 'white'),
+        panel.background = element_rect(fill = 'white'))
+```
+
+> We can see a very sharp drop from 2007 to 2011-2013. The three-year span that began LeBron's stay in Miami was very scrutinized and he was seen in a very negative light (at least in the first year and a half of that span). From a wide-eyed 22-year-old in his first Finals appearance, LeBron became the face of the league and was subject to a lot of criticism. For a time, he snapped back at the criticism, which is probably why his overall sentiment in his first three years in Miami were so low compared to the rest. We can see as well that once he went back to Cleveland, won in 2016, and became one of the most established players in the league (and its history), his overall sentiment became more consistent, despite incurring more losses in 2017 and 2018. I think we could call this a sign of maturity...
+
+***
+
+### Zooming into the 2007, 2011, and 2016 Finals
+The 2007, 2011, and 2016 Finals were drastically different for LeBron and his teams. In 2007, he was a 22-year-old underdog facing a well-established dynasty. He was still a rising star in the league. In 2011, it was his first Finals with the heavily-scrutinized and criticized Miami Heat. He was a villain in the league and was rooted against by majority of fans. Both ended in losses. In 2016, he was on a mission to bring a title to Cleveland after coming back the year before, and was the face of the league at that point. He won in a historical manner, with the Cavs becoming the first team in Finals history to come back from a 3-1 deficit to defeat the heavily favored Golden State Warriors. So yeah, very different years.
+
+![Sentiment Analysis Part I](/Volumes/GoogleDrive/My Drive/Laptop Files/1920B1/MW 1 Unstructured Data Analytics/06 Final Project/Unstructured Final Project/topic headers/thrutheyears.png)
+
+```{r}
+ft.value %>%
+  filter(Subject == "LeBron James") %>%
+  filter(Series == 2007) %>%
+  group_by(Subject, Date, Series) %>%
+  dplyr::summarize(sumSentiment = sum(y),
+                   count = n(),
+                   aveSentiment = sumSentiment/count) %>%
+  ggplot(aes(x = Date, y = aveSentiment, color = "17408B")) +
+  geom_line(show.legend = F) +
+  labs(title = "LeBron James Sentiment in the 2007 Finals",
+       y = "Date",
+       x = "Sentiment") +
+  theme(text = element_text(family = "Avenir Next",
+                            color = '#17408B'),
+        plot.title = element_text(color = "#17408B",
+                                  face = "bold"),
+        axis.text = element_text(color = '#17408B'),
+        plot.background = element_rect(fill = 'white'),
+        panel.background = element_rect(fill = 'white'))
+
+ft.value %>%
+  filter(Subject == "LeBron James") %>%
+  filter(Series == 2011) %>%
+  group_by(Subject, Date, Series) %>%
+  dplyr::summarize(sumSentiment = sum(y),
+                   count = n(),
+                   aveSentiment = sumSentiment/count) %>%
+  ggplot(aes(x = Date, y = aveSentiment, color = "17408B")) +
+  geom_line(show.legend = F) +
+  labs(title = "LeBron James Sentiment in the 2011 Finals",
+       y = "Date",
+       x = "Sentiment") +
+  theme(text = element_text(family = "Avenir Next",
+                            color = '#17408B'),
+        plot.title = element_text(color = "#17408B",
+                                  face = "bold"),
+        axis.text = element_text(color = '#17408B'),
+        plot.background = element_rect(fill = 'white'),
+        panel.background = element_rect(fill = 'white'))
+
+ft.value %>%
+  filter(Subject == "LeBron James") %>%
+  filter(Series == 2016) %>%
+  group_by(Subject, Date, Series) %>%
+  dplyr::summarize(sumSentiment = sum(y),
+                   count = n(),
+                   aveSentiment = sumSentiment/count) %>%
+  ggplot(aes(x = Date, y = aveSentiment, color = "17408B")) +
+  geom_line(show.legend = F) +
+  labs(title = "LeBron James Sentiment in the 2016 Finals",
+       y = "Date",
+       x = "Sentiment") +
+  theme(text = element_text(family = "Avenir Next",
+                            color = '#17408B'),
+        plot.title = element_text(color = "#17408B",
+                                  face = "bold"),
+        axis.text = element_text(color = '#17408B'),
+        plot.background = element_rect(fill = 'white'),
+        panel.background = element_rect(fill = 'white'))
+```
+
+> We can see that in 2017, sentiment is generally positive, but was very volatile (going below negative around the end of the first half of the series). After that, sentiment goes generally high and remains positive. In 2011, sentiment is generally lower, with a very low sentiment in the middle of the series (Dallas was catching up and LeBron was underperforming really badly at this point). It got lower again at the end of the series, with the infamous post-game interview where LeBron called out and ridiculed his haters. Surprisingly, LeBron's sentiment in the 2016 Finals was low as well. Generally, the sentiment in this series was low because of how low the chances of Cleveland winning were at those point. After the lowest point, and Cleveland's chances were getting higher again, the sentiment goes up .
+
+Let's take a look at which words were used most by LeBron in these 3 Finals series.
+
+```{r}
+ft.words %>%
+  filter(Subject == "LeBron James") %>%
+  filter(Series %in% c(2007, 2011, 2016)) %>%
+  group_by(Series, Word) %>%
+  dplyr::summarize(count = n()) %>%
+  top_n(10) %>%
+  arrange(Series, desc(count)) %>%
+  ggplot(aes(x = reorder(Word, count), y = count, fill = Series)) +
+  facet_wrap(~Series, scales = "free_y") +
+  geom_bar(stat = "identity", show.legend=F) +
+  scale_y_continuous(expand = c(0,0)) +
+  coord_flip() +
+  labs(title = "Frequency per Series",
+       y = "Frequency",
+       x = "") +
+  theme(text = element_text(family = "Avenir Next",
+                            color = '#17408B'),
+        plot.title = element_text(color = "#17408B",
+                                  face = "bold"),
+        axis.text = element_text(color = '#17408B'),
+        plot.background = element_rect(fill = 'white'),
+        panel.background = element_rect(fill = 'white'))
+```
+
+> It looks like 2016 was the era that LeBron used "at the end of the day" a lot more. In 2011, there was a lot of mention of his teammate and co-star Dwyane Wade. 2007 was very generic in the sense that a lot of regular basketball terms were used.
+
+***
+
+### Topic Modeling
+
+Let's look at the different topics discussed in each of the series.
+
+```{r}
+library(stm)
+
+tmft = ft %>%
+  select(Series, Text)
+
+set.seed(1001)
+holdoutRows = sample(1:nrow(tmft), 100, replace = FALSE)
+
+interviewText = textProcessor(documents = tmft$Text[-c(holdoutRows)], 
+                          metadata = tmft[-c(holdoutRows), ], 
+                          stem = FALSE)
+
+interviewPrep = prepDocuments(documents = interviewText$documents, 
+                               vocab = interviewText$vocab,
+                               meta = interviewText$meta)
+
+kTest = searchK(documents = interviewPrep$documents, 
+             vocab = interviewPrep$vocab, 
+             K = c(3, 4, 5, 10, 20), verbose = FALSE)
+
+kTest = kTest
+plot(kTest)
+```
+
+> It looks like 5 is an idea k to use for number of topics.
+
+```{r}
+topics5 = stm(documents = interviewPrep$documents, 
+             vocab = interviewPrep$vocab, seed = 1001,
+             K = 5, verbose = FALSE)
+
+plot(topics5)
+```
+
+> We can't learn much from this plot. Let's look at each topic further.
+
+```{r}
+labelTopics(topics5)
+```
+
+> We're learning a little bit more. We can see that topic 1 could be talking about improving after a bad game. Topic 2 could be talking about being consistent. Topic 3, on the other hand talks a lot about talent and greatness (and mentions muhammad ali). Topic 4 gets more into the technical side, with words like shot, transition, points, pick-and-roll, etc. Topic 5 talks a lot about preparation, with words like film, possessions, defense, and competition. Let's look even further.
+
+```{r}
+findThoughts(topics5, texts = interviewPrep$meta$Text, n = 1)
+```
+
+> Topic 1's sample talks a lot about improving performance and taking care of the body (most likely spoken by LeBron). Topic 2's sample talks very highly of the Heat players and mentioning a lot about different players' strengths (most likely spoken by Erik Spoelstra). Topic 3's sample talks a lot about the greatness of different opponents and the challenge of facing different teams, especially Golden State (most likely spoken by LeBron). Topic 4 talks about specifics of different games and the technical aspects of each game and how different players performed (most likely spoken by Tyronn Lue). Topic 5's sample comes from the Spurs series, talking about improving and facing a new opponent in the Finals, as well as how the team prepared for the series (most likely spoken by Erik Spoelstra). These samples more or less confirm the topics discussed earlier:  
+1. Topic 1: Improvements  
+2. Topic 2: Consistency and Team Strengths  
+3. Topic 3: Talent and Greatness  
+4. Topic 4: Technical Aspects of the Game  
+5. Topic 5: Preparation   
+
+```{r}
+newInterviewText = textProcessor(documents = tmft$Text[holdoutRows], 
+                          metadata = tmft[holdoutRows, ], 
+                          stem = FALSE)
+newInterviewCorp = alignCorpus(new = newInterviewText, old.vocab = topics5$vocab)
+
+newInterviewFitted = fitNewDocuments(model = topics5, documents = newInterviewCorp$documents, 
+                newData = newInterviewCorp$meta, origData = interviewPrep$meta)
+
+predictorText = textProcessor(documents = tmft$Text, 
+                          metadata = tmft, 
+                          stem = FALSE)
+interviewPrep = prepDocuments(documents = predictorText$documents, 
+                               vocab = predictorText$vocab,
+                               meta = predictorText$meta)
+topicPredictor = stm(documents = interviewPrep$documents,
+             vocab = interviewPrep$vocab, prevalence = ~ Series,
+             data = interviewPrep$meta, K = 5, verbose = FALSE)
+
+seriesEffect = estimateEffect(1:5 ~ Series, stmobj = topicPredictor,
+               metadata = interviewPrep$meta)
+
+summary(seriesEffect, topics = c(1:5))
+```
+
+Let's plot this out.
+
+```{r}
+plot.estimateEffect(seriesEffect, "Series", method = "pointestimate",
+                    model = topicPredictor, topics = 1, labeltype = "frex")
+plot.estimateEffect(seriesEffect, "Series", method = "pointestimate",
+                    model = topicPredictor, topics = 2, labeltype = "frex")
+plot.estimateEffect(seriesEffect, "Series", method = "pointestimate",
+                    model = topicPredictor, topics = 3, labeltype = "frex")
+plot.estimateEffect(seriesEffect, "Series", method = "pointestimate",
+                    model = topicPredictor, topics = 4, labeltype = "frex")
+plot.estimateEffect(seriesEffect, "Series", method = "pointestimate",
+                    model = topicPredictor, topics = 5, labeltype = "frex")
+```
+
+**EXCUSE THE PLOTS**
+
+> Topic 1 has a very high rate of usage in the 2007 series. Topic 2 gets more varied, but has high rate of probability in the 2013 series (mostly Miami Heat series). Topic 3 has high rate of usage in the 3 most recent Cavs series. Topic 4 has a high rate in the 2013 and 2014 Finals, which were played against the Spurs - likely to be the cause of the high volume of technical talk. Topic 5 has a generally high rate in the most recent NBA Finals series in 2018.
+
+***
+
+## ![Pronoun Analysis](/Volumes/GoogleDrive/My Drive/Laptop Files/1920B1/MW 1 Unstructured Data Analytics/06 Final Project/Unstructured Final Project/topic headers/pronoun.png) {.tabset .tabset-fade .tabset-pills}
+
+In this part, just for investigation, I wanted to see the distribution of two different types of pronouns: personal and collective (not sure if these are the right terms, so I'll define them). Personal pronouns, like "I", "me", "mine", "my", could indicate more self-centered discussions, while collective pronouns like "we", "us", "our", "ours" could indicate more team-based thinking and discussions. However, just a count isn't really indicative of much, so just take this with a grain of salt. Also, I just limited the list of pronouns to ones that are generally used and what I could find from a list <a href="https://www.thefreedictionary.com/List-of-pronouns.htm"> online </a>.
+
+### Pronoun Rate per Subject in each Series
+Let's take a look at the pronoun rate in each series
+
+```{r}
+ft.pro = ft %>%
+  unnest_tokens(Word, Text) %>%
+  filter(! Word == "fastscripts")
+
+ft.pro = ft.pro %>%
+  mutate(Word = tolower(Word))
+
+
+personal = c("i", "me", "mine", "my", "myself")
+team = c("we","us", "ours", "our", "ourselves")
+
+
+ft.pro2 = ft.pro %>%
+  filter(Word %in% c(personal, team)) %>%
+  select(Subject, Series,Word) %>%
+  mutate(personal = ifelse(Word %in% personal, 1, 0),
+         collective = ifelse(Word %in% team, 1, 0))
+
+# get count and sum per person 
+ft.pro2 = ft.pro2 %>%
+  group_by(Subject, Series) %>%
+  dplyr::summarize(count = n(),
+                   sumper = sum(personal),
+                   sumcol = sum(collective),
+                   PersonalPronounRate = sumper/count,
+                   CollectivePronounRate = sumcol/count) %>%
+  select(Subject, Series, PersonalPronounRate, CollectivePronounRate)
+
+ft.pro2 %>%
+  gather("measure", "rate", 3:4) %>%
+  select(Series, everything()) %>%
+  arrange(Series, Subject) %>%
+  ggplot(aes(x = Subject, y = rate, fill = measure)) +
+  geom_bar(stat = "identity", width = .5, position="dodge") +
+  facet_wrap(~Series) +
+  labs(title = "Pronoun Rate per Series",
+       y = "Rate",
+       x = "Subject") +
+  theme(text = element_text(family = "Avenir Next",
+                            color = '#17408B'),
+        plot.title = element_text(color = "#17408B",
+                                  face = "bold"),
+        axis.text = element_text(color = '#17408B'),
+        plot.background = element_rect(fill = 'white'),
+        panel.background = element_rect(fill = 'white'),
+        axis.text.x = element_text(angle = 90))
+```
+
+> We can see that LeBron makes use of Personal Pronouns at a higher rate than Collective Pronouns. It could mean that he's asked frequently about his own opinion and insight on some matters, or it could also mean that he prefers speaking about himself. However, his rate of use of collective pronouns is still relatively high at around 30-40%. Among coaches, we can see that Erik Spoelstra speaks significantly more about the team in a collective manner than he talks about himself, while the other three seem relatively equal in rate. 
+
+***
+
+### Zooming into the 2016 Series
+Since the 2016 Finals is rather interesting to look at because of all the ups and downs in that series, let's zoom in and see the use of pronouns in each game.
+
+```{r}
+ft.pro3 = ft.pro %>%
+  filter(Word %in% c(personal, team)) %>%
+  filter(between(Date, as.Date("2016-01-01"), as.Date("2016-12-31"))) %>%
+  select(Subject, Date, Word) %>%
+  mutate(personal = ifelse(Word %in% personal, 1, 0),
+         collective = ifelse(Word %in% team, 1, 0))
+
+# get count and sum per person 
+ft.pro3 = ft.pro3 %>%
+  group_by(Subject, Date) %>%
+  dplyr::summarize(count = n(),
+                   sumper = sum(personal),
+                   sumcol = sum(collective),
+                   PersonalPronounRate = sumper/count,
+                   CollectivePronounRate = sumcol/count) %>%
+  select(Subject, Date, PersonalPronounRate, CollectivePronounRate)
+
+ft.pro3 %>%
+  gather("measure", "rate", 3:4) %>%
+  select(Date, everything()) %>%
+  arrange(Date, Subject) %>%
+  ggplot(aes(x = Date, y = rate, col = Subject)) +
+  geom_line() +
+  facet_wrap(~measure) +
+  labs(title = "Pronoun Rate per Series",
+       y = "Rate",
+       x = "Subject") +
+  theme(text = element_text(family = "Avenir Next",
+                            color = '#17408B'),
+        plot.title = element_text(color = "#17408B",
+                                  face = "bold"),
+        axis.text = element_text(color = '#17408B'),
+        plot.background = element_rect(fill = 'white'),
+        panel.background = element_rect(fill = 'white'),
+        axis.text.x = element_text(angle = 90))
+```
+
+> We can see that Tyronn Lue and LeBron often coincide with their use of pronouns. Their use of personal pronouns drops at around the 1/3 to 1/2 mark of the series, which is around the time that the Cavaliers were at their lowest point in terms of series outlook. We could either look at this is an accountability issue, or that they were hoping to motivate the team to make a collective effort. Either way, it eventually worked.
+
+***
+
+## ![Conclusion and Next Steps](/Volumes/GoogleDrive/My Drive/Laptop Files/1920B1/MW 1 Unstructured Data Analytics/06 Final Project/Unstructured Final Project/topic headers/conclusion.png) {.tabset .tabset-fade .tabset-pills}
+
+### Conclusion
+It's of note that LeBron has generally trended up to be positively consistent in recent years in terms of his sentiment coming in and out of a Finals series. This could be a sign of maturity as he enters his last few years in the league after years of being in the Finals. And despite each era of his career being drastically different from one another in terms of path, coaching, and teammates, he's been relatively consistent in how he handles himself (at least in front of the media). I could also say the same for his coaches, no matter what their relationship to LeBron and the rest of the team was. It's also noticeable that, at least in the NBA Finals, topics discussed and words used generally stay within the realm of the game and how it's played. Sometimes, press conferences revolve around topics that are far and away from what actually transpired in the game (player's personal life, provocative topics, opinion on pop culture trends). At least, at the highest level, a level of technicality is maintained.
+
+***
+
+### Next Steps
+Hopefully this could be developed as an application to study different players, teams, and coaches in how they are asked questions and how they respond. It would be good to see how this is applied in different sports (team and individual), leagues (ex. WNBA vs NBA, EPL vs MLS) and even in a multi-disciplinary way.
+
+***
